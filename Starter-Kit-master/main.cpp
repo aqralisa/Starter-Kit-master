@@ -2,10 +2,10 @@
 // Course: TCP1101 PROGRAMMING FUNDAMENTALS 
 // Year: Trimester 1, 2022/23 (T2215) 
 // Lab: TT3L 
-// Names: AQRA ALISA BINTI RASHIDI | MEMBER_NAME_2 
-// IDs: 1211103093 | MEMBER_ID_2 
-// Emails: 1211103093@student..mu.edu.my | MEMBER_EMAIL_2 
-// Phones: 0162205867 | MEMBER_PHONE_2  
+// Names: AQRA ALISA BINTI RASHIDI | A'LYA NADHIRAH BINTI ABDUL HADI
+// IDs: 1211103093 | 1221303601
+// Emails: 1211103093@student.mmu.edu.my |  1221303601@student.mmu.edu.my
+// Phones: 0162205867 | 01110819068
 // ********************************************************* 
 
 // TODO: Fill in the missing information above and delete this line.
@@ -28,12 +28,12 @@ private:
 public:
     board(void);
 
-    void init(int rows, int collums);
+    void init(int rows, int columns);
     void display() const;
-    int rows, collums, zombies;
+    int rows, columns, zombies;
     void alienland(int x, int y, char ch);
     int getrows() const;
-    int getcollums() const;
+    int getcolumns() const;
     void charsattribute();
     char getObjects(int x, int y) const;
     int alienLife, alienAttack;
@@ -48,21 +48,22 @@ board::board()
     cout << "Please change the game settings: ";
     cout << endl;
 
-    cout << "Choose Number of Rows (3/5/7/9/11/13/15): " << endl;
+    cout << "Insert Number of Rows (3/5/7/9/11/13/15): ";
     cin >> rows;
 
-    cout << "Insert Number of Collums (3/5/7/9/11/13/15): " << endl;
-    cin >> collums;
+    cout << "Insert Number of Columns (3/5/7/9/11/13/15): ";
+    cin >> columns;
 
-    cout << "Insert Number of Zombies (min 1, max 9): " << endl;
+    cout << "Insert Number of Zombies (min 1, max 9): ";
     cin >> zombies;
+    cout << endl;
 
-    init(rows, collums);
+    init(rows, columns);
 }
 
-void board::init(int rows, int collums)
+void board::init(int rows, int columns)
 {
-    dimX_ = collums; //
+    dimX_ = columns; //
     dimY_ = rows;    //
 
     char objects[] = {' ', ' ', ' ', ' ', ' ', ' ', 'h', 'p', 'r', '>', '<', '^', 'v'};
@@ -98,7 +99,7 @@ void board::init(int rows, int collums)
 void board::display() const
 {
     // comment this out during testing
-    // system("cls"); // OR system("clear"); for Linux / MacOS
+    system("cls"); // OR system("clear"); for Linux / MacOS
 
     cout << "********************************" << endl;
     cout << " =      Alien vs Zombie        =" << endl;
@@ -108,7 +109,7 @@ void board::display() const
     for (int i = 0; i < dimY_; ++i)
     {
         // display upper border of the row
-        cout << " ";
+        cout << "  ";
         for (int j = 0; j < dimX_; ++j)
         {
             cout << "+-";
@@ -126,7 +127,7 @@ void board::display() const
     }
 
     // display lower border of the last row
-    cout << " ";
+    cout << "  ";
     for (int j = 0; j < dimX_; ++j)
     {
         cout << "+-";
@@ -134,7 +135,7 @@ void board::display() const
     cout << "+" << endl;
 
     // display column number
-    cout << " ";
+    cout << "  ";
     for (int j = 0; j < dimX_; ++j)
     {
         int digit = (j + 1) / 10;
@@ -146,7 +147,7 @@ void board::display() const
     }
     cout << endl;
 
-    cout << " ";
+    cout << "  ";
     for (int j = 0; j < dimX_; ++j)
     {
         cout << " " << (j + 1) % 10;
@@ -159,7 +160,7 @@ void board::display() const
 void board::alienland(int x, int y, char ch)
 {
 
-    map_[dimY_ - x][y - 1] = ch;
+    map_[dimY_ - y][x - 1] = ch;
 }
 
 int board::getrows() const
@@ -167,7 +168,7 @@ int board::getrows() const
     return dimY_;
 }
 
-int board::getcollums() const
+int board::getcolumns() const
 {
     return dimX_;
 }
@@ -222,7 +223,7 @@ void objFuncAlien()
 {
     board b0ard;
 
-    // rows and collums after movement
+    // rows and columns after movement
     int x1 = 2, y1 = 3;
 
     if (b0ard.getObjects(x1, y1) == 'h')
@@ -247,50 +248,26 @@ void objFuncAlien()
             cout << "Alien's life increase by 20.";
             b0ard.alienLife += 20;
         }
-    }
-
-}
-
-void objFuncZombie()
-{
-    board b0ard;
-
-    int x1 = 2, y1 = 3;
-
-    if (b0ard.getObjects(x1, y1) == 'p')
-    {
-        b0ard.zLife -= 10;
-    }
-
-    else if (b0ard.getObjects(x1, y1) == 'r')
-    {
-
-        int objUnderRock[] = {'h', 'p', ' '};
-        int numOfOURock = 3; // number of objects under rock
-
-        int randRock = rand() % numOfOURock;
-        int Rock = objUnderRock[randRock];
-
-        if (Rock == 'p')
+        else if (Rock == 'p')
         {
-            cout << "Alien founds a pod pack." << endl;
-            cout << "Nearest Zombie life decrease by 10.";
-            b0ard.zLife -= 20;
+            cout << "Alien founds a pod." << endl;
+            cout << "Nearest zombie's life is decreased by 10.";
+            b0ard.zLife -=10;
         }
+        else if (Rock == ' ')
+        {
+            cout << "Alien founds a white space.";
+        }
+        
     }
+
 }
 
-// void board::alienland(int x, int y, char ch)
-//{                     //screen coord (x, y)
-
-// map_[dimY_ - x][y - 1] = ch;
-// map_[dimY_ - y][x - 1] = ch; // map coord [row][col]
-//}
 
 void board::turn()
 {
 
-    int x = getcollums() / 2 + 1;
+    int x = getcolumns() / 2 + 1;
     int y = getrows() / 2 + 1;
 
     // do
@@ -338,32 +315,32 @@ void board::turn()
 void Introduction()
 {
     cout << endl;
-    cout << "**********Welcome to Alien vs Zombie Game **********" << endl;
+    cout << "********** Welcome to Alien vs Zombie Game **********" << endl;
     cout << endl;
     cout << " Instructions " << endl;
-    cout << " 1) Player must key in the desired number of ROWS, COLLUMS, and ZOMBIES." << endl;
+    cout << " 1) Player must key in the desired number of ROWS, COLUMNS, and ZOMBIES." << endl;
     cout << " 2) Player can key in the 'help' to show lists of command. " << endl;
-    cout << " 3) Number of Rows & Collums muat be in ODD number." << endl;
+    cout << " 3) Number of Rows & Columns must be in ODD number." << endl;
     cout << " 4) For better playing experience, the number of zombies must be less " << endl;
     cout << "    than the numbers of rows." << endl;
-    cout << " 5) Number of zombies, minimum : 1, maximum : 9.";
-    cout << endl;
+    cout << " 5) Number of zombies --> minimum: 1, maximum: 9.";
+    cout << endl << endl;
 
-    cout << "Please Type the Following Number." << endl;
+    cout << "Please type the following number." << endl;
     cout << "  1 --> Help Menu." << endl;
     cout << "  2 --> New Game." << endl;
     cout << "  3 --> Load Existing Game." << endl;
     cout << "  4 --> Quit." << endl;
-    cout << "--> " << endl;
+    cout << "--> ";
     
     
 }
 
 void help()
 {
-    cout << "**********Further Information.**********" << endl;
+    cout << "********** Further Information **********" << endl;
     cout << " The player plays the game by typing commands. The following shows the commands:" << endl;
-    cout << " 1). up   --> Alien to move up." << endl;
+    cout << " 1) up    --> Alien to move up." << endl;
     cout << " 2) down  --> Alien to move down." << endl;
     cout << " 3) left  --> Alien to move left." << endl;
     cout << " 4) right --> Alien to move right." << endl;
@@ -382,14 +359,49 @@ void alien()
 
     cout << "rows = " << b0ard.getrows() << endl;
 
-    cout << "collums = " << b0ard.getcollums() << endl;
+    cout << "columns = " << b0ard.getcolumns() << endl;
 
-    b0ard.alienland(b0ard.getrows() / 2 + 1, b0ard.getcollums() / 2 + 1 , 'A');
+    b0ard.alienland(b0ard.getcolumns() / 2 + 1, b0ard.getrows() / 2 + 1, 'A');
     b0ard.display();
     b0ard.charsattribute();
     b0ard.turn();
     
+}
 
+void changeArrows()
+{
+    board b0ard;
+    int x, y;
+    char arrow;
+    char arr[] = {'v', '^', '>', '<'};
+    cout << "Enter row: " << y;
+    cout << "Enter column: " << x;
+    cout << "Enter direction: " << arrow;
+    
+    if (arrow == arr[0])
+    {
+        b0ard.alienland(x, y, 'v');
+        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[0];
+        b0ard.display();
+    }
+    else if (arrow == arr[1])
+    {
+        b0ard.alienland(x, y, '^');
+        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[1];
+        b0ard.display();
+    }
+    else if (arrow == arr[2])
+    {
+        b0ard.alienland(x, y, '>');
+        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[2];
+        b0ard.display();
+    }
+    else if (arrow == arr[3])
+    {
+        b0ard.alienland(x, y, '<');
+        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[3];
+        b0ard.display();
+    }
 }
 
 
@@ -407,9 +419,7 @@ int main()
     {
     case '1':
         cout << endl;
-        help();
-        cout << endl;
-       
+        help();      
     
     case '2':
         alien();
