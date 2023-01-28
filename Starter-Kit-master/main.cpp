@@ -23,7 +23,7 @@ class board
 {
 private:
     vector<vector<char>> map_;
-    int dimX_, dimY_;
+    int col_, row_;
 
 public:
     board(void);
@@ -42,7 +42,9 @@ public:
     
 };
 
-board::board()
+
+// user input 
+board::board() 
 {
     cout << endl;
     cout << "Please change the game settings: ";
@@ -61,27 +63,29 @@ board::board()
     init(rows, columns);
 }
 
+
+// put random objects & amount of zombies from userinput
 void board::init(int rows, int columns)
 {
-    dimX_ = columns; //
-    dimY_ = rows;    //
+    col_ = columns; //
+    row_ = rows;    //
 
     char objects[] = {' ', ' ', ' ', ' ', ' ', ' ', 'h', 'p', 'r', '>', '<', '^', 'v'};
 
     int noOfObjects = 13; // number of objects in the objects array
 
     // create dynamic 2D array using vector
-    map_.resize(dimY_); // create empty rows
-    for (int i = 0; i < dimY_; ++i)
+    map_.resize(row_); // create empty rows
+    for (int i = 0; i < row_; ++i)
     {
-        map_[i].resize(dimX_); // resize each row
+        map_[i].resize(col_); // resize each row
     }
     
 
     // put random characters into the vector array
-    for (int i = 0; i < dimY_; ++i)
+    for (int i = 0; i < row_; ++i)
     {
-        for (int j = 0; j < dimX_; ++j)
+        for (int j = 0; j < col_; ++j)
         {
             int objNo = rand() % noOfObjects;
             map_[i][j] = objects[objNo];
@@ -91,11 +95,13 @@ void board::init(int rows, int columns)
     // put zombies
     for (int n = 49; n < zombies + 49; ++n) // n = 49 = '1' ASCII code
     {
-        map_[rand() % dimY_][rand() % dimX_] = char(n);
+        map_[rand() % row_][rand() % col_] = char(n);
     }
 
 }
 
+
+// display board based on userinput 
 void board::display() const
 {
     // comment this out during testing
@@ -106,20 +112,20 @@ void board::display() const
     cout << "********************************" << endl;
 
     // for each row
-    for (int i = 0; i < dimY_; ++i)
+    for (int i = 0; i < row_; ++i)
     {
         // display upper border of the row
         cout << "  ";
-        for (int j = 0; j < dimX_; ++j)
+        for (int j = 0; j < col_; ++j)
         {
             cout << "+-";
         }
         cout << "+" << endl;
 
         // display row number
-        cout << setw(2) << (dimY_ - i);
+        cout << setw(2) << (row_ - i);
         // display cell content and border of each column
-        for (int j = 0; j < dimX_; ++j)
+        for (int j = 0; j < col_; ++j)
         {
             cout << "|" << map_[i][j];
         }
@@ -128,7 +134,7 @@ void board::display() const
 
     // display lower border of the last row
     cout << "  ";
-    for (int j = 0; j < dimX_; ++j)
+    for (int j = 0; j < col_; ++j)
     {
         cout << "+-";
     }
@@ -136,7 +142,7 @@ void board::display() const
 
     // display column number
     cout << "  ";
-    for (int j = 0; j < dimX_; ++j)
+    for (int j = 0; j < col_; ++j)
     {
         int digit = (j + 1) / 10;
         cout << " ";
@@ -148,7 +154,7 @@ void board::display() const
     cout << endl;
 
     cout << "  ";
-    for (int j = 0; j < dimX_; ++j)
+    for (int j = 0; j < col_; ++j)
     {
         cout << " " << (j + 1) % 10;
     }
@@ -157,22 +163,25 @@ void board::display() const
 }
 
 
+// put alien in the middle of the board
 void board::alienland(int x, int y, char ch)
 {
 
-    map_[dimY_ - y][x - 1] = ch;
+    map_[row_ - y][x - 1] = ch;
 }
 
 int board::getrows() const
 {
-    return dimY_;
+    return row_;
 }
 
 int board::getcolumns() const
 {
-    return dimX_;
+    return col_;
 }
 
+
+// alien attack/life & randomize zombie attack/life/range
 void board::charsattribute()
 {
 
@@ -211,14 +220,17 @@ void board::charsattribute()
     }
 }
 
+
 // get map after movement
 char board::getObjects(int x, int y) const
 {
-    // return map_[dimY_ - x][y - 1];
-    return map_[dimY_ - y][x - 1]; // [dimY-srow][scol-1]
+    // return map_[row_ - x][y - 1];
+    return map_[row_ - y][x - 1]; // [dimY-srow][scol-1]
 }
 
-// objects for alien
+
+
+// objects applies for alien and zombies
 void objFuncAlien()
 {
     board b0ard;
@@ -264,6 +276,7 @@ void objFuncAlien()
 }
 
 
+// movement 
 void board::turn()
 {
 
@@ -309,9 +322,10 @@ void board::turn()
         alienland(x, y, 'A');
         display();
     }
-    //}while (x!= dimX_ || x!= 1 || y!= dimY_ || y!= 1);
+    //}while (x!= col_ || x!= 1 || y!= row_ || y!= 1);
 }
 
+// introduction function
 void Introduction()
 {
     cout << endl;
@@ -336,6 +350,8 @@ void Introduction()
     
 }
 
+
+// help instructions function
 void help()
 {
     cout << "********** Further Information **********" << endl;
@@ -352,6 +368,7 @@ void help()
 
 }
 
+// function for putting alien at the middle of the board
 void alien()
 {
 
@@ -364,10 +381,15 @@ void alien()
     b0ard.alienland(b0ard.getcolumns() / 2 + 1, b0ard.getrows() / 2 + 1, 'A');
     b0ard.display();
     b0ard.charsattribute();
-    b0ard.turn();
+    
+    while (b0ard.zombies != 0)
+    {
+        b0ard.turn();
+    }
     
 }
 
+// function to change arrow not yet implemented
 void changeArrows()
 {
     board b0ard;
@@ -417,19 +439,19 @@ int main()
 
     switch (playerscommand)
     {
-    case '1':
+    case '1':  // call help function
         cout << endl;
         help();      
     
-    case '2':
+    case '2': // new game
         alien();
         break;
 
-    case '3':
+    case '3': // load game from file
         cout << "Not Finished yet." << endl;
         break;
 
-    case '4':
+    case '4': // quit game
         exit(0);
     }
     cout << endl;
