@@ -10,20 +10,13 @@ Please provide the YouTube link to your [Video Demo](https://youtube.com).
 
 List all the features completed.
 
-1. Cool Feature #1
-2. Cool Feature #2
-3. *add more*
+1.Randomly generates game board.
+2.Game characters attributes
+3.Alien's movement (50%)
+4.Game Objects 
+5.Game Controls (50%)
 
 ### To Do
-
-List all the features not yet done. Remove this section if there is no incomplete requirements.
-
-1. Cool Feature #1
-2. *add more*
-
-## Additional Features
-
-Describe the additional features that has been implemented.
 
 ## Contributions
 
@@ -31,21 +24,19 @@ List down the contribution of each group members.
 
 For example:
 
-### Tony Stark
+### Aqra Alisa
 
 1. Randomly generate game board.
-2. *add more*
+2. Implement sone game objects.
 
-### Steve Rogers
+### Alya Nadhirah
 
 1. Zombie movement and attack behaviour.
-2. *add more*
+2. Implement some game objects.
 
-### Dr. Strange
-
-1. Implement all game objects.
-2. *add more*
 
 ## Problems Encountered & Solutions
 
-Describe the problems encountered and provide the solutions / plan for the solutions.
+1.The void() turn function for Alien's movement only works once. Solution = try using loop.
+2.Zombie's movement not yet implemented. Solution = should finish alien's movement first then try to relate to it.
+3.Save and Load game file not yet implemented. 
