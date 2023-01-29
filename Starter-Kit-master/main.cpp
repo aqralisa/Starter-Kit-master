@@ -39,6 +39,7 @@ public:
     int alienLife, alienAttack;
     int zLife, zAttack, zRange;
     void turn();
+    void changeArrows();
     
 };
 
@@ -275,6 +276,42 @@ void objFuncAlien()
 
 }
 
+// function to change arrow not yet implemented
+void board::changeArrows()
+{
+    board b0ard;
+    int x, y;
+    char arrow;
+    char arr[] = {'v', '^', '>', '<'};
+    cout << "Enter row: " << y;
+    cout << "Enter column: " << x;
+    cout << "Enter direction: " << arrow;
+    
+    if (arrow == arr[0])
+    {
+        b0ard.alienland(x, y, 'v');
+        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[0];
+        b0ard.display();
+    }
+    else if (arrow == arr[1])
+    {
+        b0ard.alienland(x, y, '^');
+        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[1];
+        b0ard.display();
+    }
+    else if (arrow == arr[2])
+    {
+        b0ard.alienland(x, y, '>');
+        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[2];
+        b0ard.display();
+    }
+    else if (arrow == arr[3])
+    {
+        b0ard.alienland(x, y, '<');
+        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[3];
+        b0ard.display();
+    }
+}
 
 // movement 
 void board::turn()
@@ -389,49 +426,11 @@ void alien()
     
 }
 
-// function to change arrow not yet implemented
-void changeArrows()
-{
-    board b0ard;
-    int x, y;
-    char arrow;
-    char arr[] = {'v', '^', '>', '<'};
-    cout << "Enter row: " << y;
-    cout << "Enter column: " << x;
-    cout << "Enter direction: " << arrow;
-    
-    if (arrow == arr[0])
-    {
-        b0ard.alienland(x, y, 'v');
-        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[0];
-        b0ard.display();
-    }
-    else if (arrow == arr[1])
-    {
-        b0ard.alienland(x, y, '^');
-        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[1];
-        b0ard.display();
-    }
-    else if (arrow == arr[2])
-    {
-        b0ard.alienland(x, y, '>');
-        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[2];
-        b0ard.display();
-    }
-    else if (arrow == arr[3])
-    {
-        b0ard.alienland(x, y, '<');
-        cout << "Arrow " << b0ard.getObjects(x, y) << "is switched to " << arr[3];
-        b0ard.display();
-    }
-}
-
-
-
 int main()
 {
-    cout << "Assignment (Part 1)" << endl;
-    cout << "Let's Get Started!" << endl;
+    srand(time(NULL));
+    cout << "                   Assignment Part 1" << endl;
+    cout << "                   Let's Get Started!" << endl;
 
     Introduction();
     char playerscommand;
