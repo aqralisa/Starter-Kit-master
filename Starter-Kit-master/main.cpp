@@ -359,6 +359,10 @@ void board::turn()
         alienland(x, y, 'A');
         display();
     }
+    else if (command == "arrow")
+    {
+        changeArrows();
+    }
     //}while (x!= col_ || x!= 1 || y!= row_ || y!= 1);
 }
 
