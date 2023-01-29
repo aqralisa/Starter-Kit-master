@@ -27,11 +27,11 @@ For example:
 ### Aqra Alisa
 
 1. Randomly generate game board.
-2. Implement sone game objects.
+2. Implement some game objects.
 
-### Alya Nadhirah
+### A'lya Nadhirah
 
-1. Zombie movement and attack behaviour.
+1. Zombie's movement and attack behaviour.
 2. Implement some game objects.
 
 
