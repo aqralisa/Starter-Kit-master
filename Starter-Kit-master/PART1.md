@@ -12,9 +12,14 @@ List all the features completed.
 
 1.Randomly generates game board.
 2.Game characters attributes
-3.Alien's movement (50%)
-4.Game Objects 
-5.Game Controls (50%)
+3.Alien's movement 
+
+
+### Not Yet Completed 
+1. Game Objects
+2. Game Controls
+3. Zombie's Movement
+4. Save and Load File
 
 ### To Do
 
@@ -27,11 +32,11 @@ For example:
 ### Aqra Alisa
 
 1. Randomly generate game board.
-2. Implement some game objects.
+2. Character's Attribute
 
 ### A'lya Nadhirah
 
-1. Zombie's movement and attack behaviour.
+1. Alien's movement and attack behaviour.
 2. Implement some game objects.
 
 
