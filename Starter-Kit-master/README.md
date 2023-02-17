@@ -26,7 +26,8 @@ Please refer to Compilation Instructions for information on how to compile the p
 2. For better playing experiences, the number of zombies must be LESS THAN the number of rows.
 3. The maximum number of zombies in each game is limited to 9 ZOMBIES.
 
-5.3 Game Controls
+1.3 Game Controls
+
 up - Alien to move up.
 down - Alien to move down.
 left - Alien to move left.
@@ -47,10 +48,12 @@ quit - Quit the game while still in play.
 6. The game will end when all zombies are defeated or the alien dies.
 
 1.5 Switching Arrow's Direction.
+
 The user will be asked to enter the row and column of the arrow object
 to switch, followed by the direction of the arrow object to switch to.)
 
 1.6 Saving the Game.
+
 The user can save the game while it still in progress or after it ends.
 Simply type in 'save'. 
 
