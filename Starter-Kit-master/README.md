@@ -1,24 +1,34 @@
 # Alien vs. Zombie
 
-Please introduce the game here.
+Once upon a time, there lives an alien warrior who had not fought for a long time, Nine Photon The Royal Knight of Icline. He lives on a harmonious planet where all the alien citizen's live happily ever after.
+One day, Nine felt bored so he went to explore his neighboring planet. While Nine was exploring the planet, he came across a weird-looking stone. The stone shines like emeralds, its unique color makes him aroused. He felt intrigued and brought the glowing stone home. A few days later, he realizes that the stone has become bigger than the size when he brought it home. The warrior started to feel worried and threw it at Icline's wasteland. Suddenly the stone burst and several horrendous zombies appeared. ૮ ˙Ⱉ˙ ა rawr!
 
-You may add one signature screenshot of your program here or above the title. Check out [this tutorial](https://www.digitalocean.com/community/tutorials/markdown-markdown-images) to learn how to do it.
+What would Nine do to save his planet? Should he be responsible for the zombies?
+
+Let's help Nine save Icline!
+
+✿ ⋆｡ ﾟ ☁︎｡⋆｡ ﾟ ☾ ﾟ ｡⋆
+
+In this game, the user controls an alien on a mission to eliminate zombies. To provide an unique gaming experience, it blends a number of role-playing game, puzzle, path-planning, and strategic aspects.
+
+<img title="Wasteland" alt="Alt text" src="C:\Users\lisas\OneDrive\Pictures\Screenshots\alienzombiepic.png">
 
 Please provide the YouTube link to your [Video Demo](https://youtube.com).
 
 ## Compilation Instructions
 
-Provide instructions on how to compile your program, especially when it is non-trivial.
-
-For example:
+Instructions on how to compile your program.
 
 ```
-g++ main.cpp folder1\code.cpp folder2\code.cpp ......
+g++ main.cpp ......
 ```
+
+if its not working do copy the file path and paste in next to g++...
+*make sure to save all the files under one folder.
 
 ## User Manual
 1.1 Guidelines on Starting Alien vs Zombie.
-Download the files from Starter-Kit-master repositories. Once the files have been downloaded, open the 'main.cpp' file on any desired source-code editor (Command Prompt, Visual Studio Code, Codeblocks, etc). Note that a G++ compiler is needed to run the program.
+Download the files from Starter-Kit-master repositories. Once the files have been downloaded, open the folder on any desired source-code editor (Command Prompt, Visual Studio Code, Codeblocks, etc). Note that a G++ compiler is needed to run the program.
 Please refer to Compilation Instructions for information on how to compile the program.
 
 1.2 Game Rules.
