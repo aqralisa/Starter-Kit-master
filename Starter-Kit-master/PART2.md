@@ -53,3 +53,4 @@ For example:
 ## Problems Encountered & Solutions
 1. Load and Save Files.
 2. Zombie's Movement and Attacking
+3. Statement "Alien hits border." doesn't come out.
