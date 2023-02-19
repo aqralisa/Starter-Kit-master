@@ -1,3 +1,13 @@
+// *********************************************************
+// Course: TCP1101 PROGRAMMING FUNDAMENTALS
+// Year: Trimester 1, 2022/23 (T2215)
+// Lab: TT8L
+// Names: AQRA ALISA BINTI RASHIDI |  
+// IDs: 1211103093 | 
+// Emails: 1211103093@student.mmu.edu.my | 
+// Phones: 0162205867  | 
+// *********************************************************
+
 #include <iostream>
 #include <string>
 #include <vector>
@@ -13,23 +23,6 @@
 #include <stdlib.h>
 
 using namespace std;
-
-// PROBLEM:
-// 2. Klu masuk white space and '.', Alien x bergerak pon. (i think it's done, fixed by adding system("pause"))
-// 3. Tukar arrow x jadi. Fix dkt changearrows (done)
-// 4. Alienattributes ada lebih space (done)
-// 5. Kena add alienland kat health, pod, rock to change the object (done)
-// 9. If dpt h/p, alien can move (done)
-//// 6. Klu tgk video guides, max life for alien is 100, so even if initially dpt health, takkan tmbh life. (done)
-//// 7. Dkt changearrow tak keluar alien and zombie attributes (bcs alien and zombie defined later) (done)
-// In my opinion, there should be seperate function for rock, so that alien won't move when implemented in alienmovement function, tp entahla (done)
-// 8. If dpt arrow, ada keluar alien collects arrow.... then move ikut command, baru move ikut arrow (some problem with this) UPDATE: I think the movement is fixed
-//
-// 10.If dpt r, kena replace with h/p/' ', alien doesn't move if based on video guides. (replace done, but alien still moves)
-// 11.Tgk video guides, when alien's turn ends, trail will reset meaning all the dots will be replaced with spaces or random things.
-// 12. After Alienmovement ends, Zombie's movement tak function. (okay je but still don't know how to let zombie moves in order)
-// 13. If dpt rock, alien won't look like it has moves, but the value of the x or y has changed. So the next movement depends on the changed value
-// 14. Attributes masih berubah
 
 void Introduction()
 {
@@ -294,9 +287,32 @@ private:
     int aLife_{100}, aAttack_{0}, x_, y_;
     int zLife_, zAttack_, zRange_;
     bool moves_{1};
+    int l1, l2, l3, l4, l5, l6, l7, l8, l9;
+    int a1, a2, a3, a4, a5, a6, a7, a8, a9;
+    int r1, r2, r3, r4, r5, r6, r7, r8, r9;
 
 public:
-    alienturn(){};
+    alienturn()
+    {
+        int zombieLife[] = {100, 120, 150, 180, 200};
+        int noOfzLife = 5; // number of life in zombieLife array
+
+        int zombieAttack[] = {5, 10, 15, 20};
+        int noOfzAttack = 4; // number of attack in zombieAttack array
+
+        int zombieRange[] = {1, 2, 3, 4, 5};
+        int noOfzRange = 5; // number of range in zombieRange array
+
+        l1 = zombieLife[rand() % noOfzLife], a1 = zombieAttack[rand() % noOfzAttack], r1 = zombieRange[rand() % noOfzRange];
+        l2 = zombieLife[rand() % noOfzLife], a2 = zombieAttack[rand() % noOfzAttack], r2 = zombieRange[rand() % noOfzRange];
+        l3 = zombieLife[rand() % noOfzLife], a3 = zombieAttack[rand() % noOfzAttack], r3 = zombieRange[rand() % noOfzRange];
+        l4 = zombieLife[rand() % noOfzLife], a4 = zombieAttack[rand() % noOfzAttack], r4 = zombieRange[rand() % noOfzRange];
+        l5 = zombieLife[rand() % noOfzLife], a5 = zombieAttack[rand() % noOfzAttack], r5 = zombieRange[rand() % noOfzRange];
+        l6 = zombieLife[rand() % noOfzLife], a6 = zombieAttack[rand() % noOfzAttack], r6 = zombieRange[rand() % noOfzRange];
+        l7 = zombieLife[rand() % noOfzLife], a7 = zombieAttack[rand() % noOfzAttack], r7 = zombieRange[rand() % noOfzRange];
+        l8 = zombieLife[rand() % noOfzLife], a8 = zombieAttack[rand() % noOfzAttack], r8 = zombieRange[rand() % noOfzRange];
+        l9 = zombieLife[rand() % noOfzLife], a9 = zombieAttack[rand() % noOfzAttack], r9 = zombieRange[rand() % noOfzRange];
+    };
 
     void changeArrows(board &b0ard)
     {
@@ -550,100 +566,84 @@ public:
         return zRange_;
     }
 
-    void zombieAttributes(board &b0ard)
-    {
-        int zombieLife[] = {100, 120, 150, 180, 200};
-        int noOfzLife = 5; // number of life in zombieLife array
-
-        int zombieAttack[] = {5, 10, 15, 20};
-        int noOfzAttack = 4; // number of attack in zombieAttack array
-
-        int zombieRange[] = {1, 2, 3, 4, 5};
-        int noOfzRange = 5; // number of range in zombieRange array
-
-        int zLife = rand() % noOfzLife;
-        int zAttack = rand() % noOfzAttack;
-        int zRange = rand() % noOfzRange;
-
-        zLife_ = zombieLife[zLife];
-        zAttack_ = zombieAttack[zAttack];
-        zRange_ = zombieRange[zRange];
-
-        ofstream in;
-        in.open("zombie_life.txt", ios::out);
-        in << zLife_ << endl;
-
-        if (!in.is_open())
-        {
-            cout << "Error Opening File!" << endl;
-            // return 1;
-        }
-        in.close();
-
-        ofstream in1;
-        in1.open("zombie_attack.txt", ios::out);
-        in1 << zAttack_ << endl;
-
-        if (!in1.is_open())
-        {
-            cout << "Error Opening File!" << endl;
-            // return 1;
-        }
-        in1.close();
-
-        ofstream in2;
-        in2.open("zombie_range.txt", ios::out);
-        in2 << zRange_ << endl;
-
-        if (!in2.is_open())
-        {
-            cout << "Error Opening File!" << endl;
-            // return 1;
-        }
-        in2.close();
-    }
-
     void displayzombieAttributes(board &b0ard)
     {
-        for (int z = 1; z < b0ard.getzom() + 1; z++)
+
+        int numberofzombies = b0ard.getzom();
+
+        switch (numberofzombies)
         {
-            cout << "Zombie " << z << ": ";
-            string line;
-            ifstream file("zombie_life.txt");
+        case 1:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            break;
 
-            while (getline(file, line))
-            {
-                string c = line;
-                cout << "Life --> " << setw(3) << c << " ";
-                break;
-            }
+        case 2:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            cout << "Zombie 2 : Life --> " << setw(3) << l2 << ", Attack --> " << setw(3) << a2 << ", Range --> " << r2 << endl;
+            break;
 
-            file.close();
+        case 3:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            cout << "Zombie 2 : Life --> " << setw(3) << l2 << ", Attack --> " << setw(3) << a2 << ", Range --> " << r2 << endl;
+            cout << "Zombie 3 : Life --> " << setw(3) << l3 << ", Attack --> " << setw(3) << a3 << ", Range --> " << r3 << endl;
+            break;
 
-            string line1;
-            ifstream file1("zombie_attack.txt");
+        case 4:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            cout << "Zombie 2 : Life --> " << setw(3) << l2 << ", Attack --> " << setw(3) << a2 << ", Range --> " << r2 << endl;
+            cout << "Zombie 3 : Life --> " << setw(3) << l3 << ", Attack --> " << setw(3) << a3 << ", Range --> " << r3 << endl;
+            cout << "Zombie 4 : Life --> " << setw(3) << l4 << ", Attack --> " << setw(3) << a4 << ", Range --> " << r4 << endl;
+            break;
 
-            while (getline(file1, line1))
-            {
-                string a = line1;
-                cout << "Attack --> " << setw(3) << a << " ";
-                break;
-            }
+        case 5:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            cout << "Zombie 2 : Life --> " << setw(3) << l2 << ", Attack --> " << setw(3) << a2 << ", Range --> " << r2 << endl;
+            cout << "Zombie 3 : Life --> " << setw(3) << l3 << ", Attack --> " << setw(3) << a3 << ", Range --> " << r3 << endl;
+            cout << "Zombie 4 : Life --> " << setw(3) << l4 << ", Attack --> " << setw(3) << a4 << ", Range --> " << r4 << endl;
+            cout << "Zombie 5 : Life --> " << setw(3) << l5 << ", Attack --> " << setw(3) << a5 << ", Range --> " << r5 << endl;
+            break;
 
-            file1.close();
+        case 6:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            cout << "Zombie 2 : Life --> " << setw(3) << l2 << ", Attack --> " << setw(3) << a2 << ", Range --> " << r2 << endl;
+            cout << "Zombie 3 : Life --> " << setw(3) << l3 << ", Attack --> " << setw(3) << a3 << ", Range --> " << r3 << endl;
+            cout << "Zombie 4 : Life --> " << setw(3) << l4 << ", Attack --> " << setw(3) << a4 << ", Range --> " << r4 << endl;
+            cout << "Zombie 5 : Life --> " << setw(3) << l5 << ", Attack --> " << setw(3) << a5 << ", Range --> " << r5 << endl;
+            cout << "Zombie 6 : Life --> " << setw(3) << l6 << ", Attack --> " << setw(3) << a6 << ", Range --> " << r6 << endl;
+            break;
 
-            string line2;
-            ifstream file2("zombie_range.txt");
+        case 7:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            cout << "Zombie 2 : Life --> " << setw(3) << l2 << ", Attack --> " << setw(3) << a2 << ", Range --> " << r2 << endl;
+            cout << "Zombie 3 : Life --> " << setw(3) << l3 << ", Attack --> " << setw(3) << a3 << ", Range --> " << r3 << endl;
+            cout << "Zombie 4 : Life --> " << setw(3) << l4 << ", Attack --> " << setw(3) << a4 << ", Range --> " << r4 << endl;
+            cout << "Zombie 5 : Life --> " << setw(3) << l5 << ", Attack --> " << setw(3) << a5 << ", Range --> " << r5 << endl;
+            cout << "Zombie 6 : Life --> " << setw(3) << l6 << ", Attack --> " << setw(3) << a6 << ", Range --> " << r6 << endl;
+            cout << "Zombie 7 : Life --> " << setw(3) << l7 << ", Attack --> " << setw(3) << a7 << ", Range --> " << r7 << endl;
+            break;
 
-            while (getline(file2, line2))
-            {
-                string b = line2;
-                cout << "Range --> " << setw(3) << b << "\n";
-                break;
-            }
+        case 8:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            cout << "Zombie 2 : Life --> " << setw(3) << l2 << ", Attack --> " << setw(3) << a2 << ", Range --> " << r2 << endl;
+            cout << "Zombie 3 : Life --> " << setw(3) << l3 << ", Attack --> " << setw(3) << a3 << ", Range --> " << r3 << endl;
+            cout << "Zombie 4 : Life --> " << setw(3) << l4 << ", Attack --> " << setw(3) << a4 << ", Range --> " << r4 << endl;
+            cout << "Zombie 5 : Life --> " << setw(3) << l5 << ", Attack --> " << setw(3) << a5 << ", Range --> " << r5 << endl;
+            cout << "Zombie 6 : Life --> " << setw(3) << l6 << ", Attack --> " << setw(3) << a6 << ", Range --> " << r6 << endl;
+            cout << "Zombie 7 : Life --> " << setw(3) << l7 << ", Attack --> " << setw(3) << a7 << ", Range --> " << r7 << endl;
+            cout << "Zombie 8 : Life --> " << setw(3) << l8 << ", Attack --> " << setw(3) << a8 << ", Range --> " << r8 << endl;
+            break;
 
-            file2.close();
-
+        case 9:
+            cout << "Zombie 1 : Life --> " << setw(3) << l1 << ", Attack --> " << setw(3) << a1 << ", Range --> " << r1 << endl;
+            cout << "Zombie 2 : Life --> " << setw(3) << l2 << ", Attack --> " << setw(3) << a2 << ", Range --> " << r2 << endl;
+            cout << "Zombie 3 : Life --> " << setw(3) << l3 << ", Attack --> " << setw(3) << a3 << ", Range --> " << r3 << endl;
+            cout << "Zombie 4 : Life --> " << setw(3) << l4 << ", Attack --> " << setw(3) << a4 << ", Range --> " << r4 << endl;
+            cout << "Zombie 5 : Life --> " << setw(3) << l5 << ", Attack --> " << setw(3) << a5 << ", Range --> " << r5 << endl;
+            cout << "Zombie 6 : Life --> " << setw(3) << l6 << ", Attack --> " << setw(3) << a6 << ", Range --> " << r6 << endl;
+            cout << "Zombie 7 : Life --> " << setw(3) << l7 << ", Attack --> " << setw(3) << a7 << ", Range --> " << r7 << endl;
+            cout << "Zombie 8 : Life --> " << setw(3) << l8 << ", Attack --> " << setw(3) << a8 << ", Range --> " << r8 << endl;
+            cout << "Zombie 9 : Life --> " << setw(3) << l9 << ", Attack --> " << setw(3) << a9 << ", Range --> " << r9 << endl;
+            break;
         }
     }
 
@@ -866,7 +866,7 @@ public:
             b0ard.alienland(zomPosX_, zomPosY_, zombieNum);
             b0ard.display();
             alien.alienAttributes();
-            alien.zombieAttributes(b0ard);
+            alien.displayzombieAttributes(b0ard);
             cout << "\n Zombie " << zombieNum << " moves up.\n\n";
             system("pause");
         }
@@ -886,7 +886,7 @@ public:
             b0ard.alienland(zomPosX, zomPosY, zombieNum);
             b0ard.display();
             alien.alienAttributes();
-            alien.zombieAttributes(b0ard);
+            alien.displayzombieAttributes(b0ard);
             cout << "\n Zombie " << zombieNum << " moves down.\n\n";
             system("pause");
         }
@@ -906,7 +906,7 @@ public:
             b0ard.alienland(zomPosX, zomPosY, zombieNum);
             b0ard.display();
             alien.alienAttributes();
-            alien.zombieAttributes(b0ard);
+            alien.displayzombieAttributes(b0ard);
             cout << "\n Zombie " << zombieNum << " moves right.\n\n";
             system("pause");
         }
@@ -926,7 +926,7 @@ public:
             b0ard.alienland(zomPosX, zomPosY, zombieNum);
             b0ard.display();
             alien.alienAttributes();
-            alien.zombieAttributes(b0ard);
+            alien.displayzombieAttributes(b0ard);
             cout << "\n Zombie " << zombieNum << " moves left.\n\n";
             system("pause");
         }
