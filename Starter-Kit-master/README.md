@@ -13,7 +13,7 @@ In this game, the user controls an alien on a mission to eliminate zombies. To p
 
 <img title="Wasteland" alt="Alt text" src="C:\Users\lisas\OneDrive\Pictures\Screenshots\alienzombiepic.png">
 
-Please provide the YouTube link to your [Video Demo](https://youtube.com).
+Please provide the YouTube link to your [Video Demo](https://youtu.be/-ULoO6ZxFcQ).
 
 ## Compilation Instructions
 
