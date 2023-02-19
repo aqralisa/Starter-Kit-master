@@ -5,7 +5,31 @@
 #include <cstdlib> // for system()
 #include <ctime>   // for time() in srand( time(NULL) );
 #include <iomanip> // for setw()
+#include <conio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 using namespace std;
+
+// PROBLEM:
+// 2. Klu masuk white space and '.', Alien x bergerak pon. (i think it's done, fixed by adding system("pause"))
+// 3. Tukar arrow x jadi. Fix dkt changearrows (done)
+// 4. Alienattributes ada lebih space (done)
+// 5. Kena add alienland kat health, pod, rock to change the object (done)
+// 9. If dpt h/p, alien can move (done)
+//// 6. Klu tgk video guides, max life for alien is 100, so even if initially dpt health, takkan tmbh life. (done)
+//// 7. Dkt changearrow tak keluar alien and zombie attributes (bcs alien and zombie defined later) (done)
+// In my opinion, there should be seperate function for rock, so that alien won't move when implemented in alienmovement function, tp entahla (done)
+// 8. If dpt arrow, ada keluar alien collects arrow.... then move ikut command, baru move ikut arrow (some problem with this) UPDATE: I think the movement is fixed
+//
+// 10.If dpt r, kena replace with h/p/' ', alien doesn't move if based on video guides. (replace done, but alien still moves)
+// 11.Tgk video guides, when alien's turn ends, trail will reset meaning all the dots will be replaced with spaces or random things.
+// 12. After Alienmovement ends, Zombie's movement tak function. (okay je but still don't know how to let zombie moves in order)
+// 13. If dpt rock, alien won't look like it has moves, but the value of the x or y has changed. So the next movement depends on the changed value
+// 14. Attributes masih berubah
 
 void Introduction()
 {
@@ -35,13 +59,14 @@ void help()
     cout << " 7) save  --> Save the current game to a file." << endl;
     cout << " 8) load  --> Load a saved game from a file." << endl;
     cout << " 9) quit  --> Quit the game while still in play." << endl;
+    system("pause");
 }
 
 class board
 {
 private:
     vector<vector<char>> map_;
-    int col_, row_, zom_;
+    int col_, row_, zom_, zom_x, zom_y;
 
 public:
     board(int rows, int columns)
@@ -53,7 +78,7 @@ public:
 
     void init(int rows, int columns)
     {
-        cout << endl;
+        system("cls");
         cout << "Default game settings:" << endl;
         cout << "----------------------" << endl
              << endl;
@@ -69,9 +94,10 @@ public:
 
         if (yesno == 'y')
         {
+            system("cls");
             int rows, columns, zombies;
-            cout << "Game settings: ";
-            cout << endl;
+            cout << "Game settings: \n";
+            cout << "-------------\n";
 
             cout << "Insert number of rows: ";
             cin >> rows;
@@ -107,6 +133,11 @@ public:
             col_ = 15;
             zom_ = 1;
         }
+        else
+        {
+            cout << "Please enter y or n.\n";
+        }
+
         char objects[] = {' ', ' ', ' ', ' ', ' ', ' ', 'h', 'p', 'r', '>', '<', '^', 'v'};
 
         int noOfObjects = 13; // number of objects in the objects array
@@ -128,12 +159,17 @@ public:
             }
         }
 
-        // put zombies
-        for (int n = 49; n < zom_ + 49; ++n) // n = 49 = '1' ASCII code
-        {
-            char z = char(n);
-            map_[rand() % row_][rand() % col_] = z;
-        }
+        // char zombies[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+        // // put zombies
+        // for (int n = 0; n < zom_; ++n) // n = 49 = '1' ASCII code
+        // {
+        //     int zom_x = rand() % col_;
+        //     int zom_y = rand() % row_;
+
+        //     char z = zombies[n];
+        //     map_[zom_y][zom_x] = z;
+        // }
     }
 
     void display() const
@@ -196,6 +232,21 @@ public:
              << endl;
     }
 
+    void zombieland()
+    {
+        char zombies[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+        // put zombies
+        for (int n = 0; n < zom_; ++n) // n = 49 = '1' ASCII code
+        {
+            int zom_x = rand() % col_ + 1;
+            int zom_y = rand() % row_ + 1;
+
+            char z = zombies[n];
+            alienland(zom_x, zom_y, z);
+        }
+    }
+
     int getrows() const
     {
         return row_;
@@ -221,67 +272,38 @@ public:
         map_[row_ - y][x - 1] = ch;
     }
 
+    bool insideMap(int x, int y)
+    {
+        return (x > 0 && x < col_ && y > 0 && y < row_);
+    }
+
+    int getzom_x() const
+    {
+        return zom_x;
+    }
+
+    int getzom_y() const
+    {
+        return zom_y;
+    }
 };
 
 class alienturn
 {
 private:
-    int aLife_{100}, aAttack{0};
+    int aLife_{100}, aAttack_{0}, x_, y_;
     int zLife_, zAttack_, zRange_;
+    bool moves_{1};
 
 public:
     alienturn(){};
 
-    void moveUp(board &b0ard, int &x, int &y)
-    {
-        b0ard.alienland(x, y, 'A');
-        b0ard.display();
-        int Old_y = y - 1;
-        b0ard.alienland(x, Old_y, '.');
-        b0ard.display();
-        alienAttributes();
-        zombieAttributes(b0ard);
-    }
-
-    void moveDown(board &b0ard, int &x, int &y)
-    {
-        b0ard.alienland(x, y, 'A');
-        b0ard.display();
-        int Old_y = y + 1;
-        b0ard.alienland(x, Old_y, '.');
-        b0ard.display();
-        alienAttributes();
-        zombieAttributes(b0ard);
-    }
-
-    void moveRight(board &b0ard, int &x, int &y)
-    {
-        b0ard.alienland(x, y, 'A');
-        b0ard.display();
-        int Old_x = x - 1;
-        b0ard.alienland(Old_x, y, '.');
-        b0ard.display();
-        alienAttributes();
-        zombieAttributes(b0ard);
-    }
-
-    void moveLeft(board &b0ard, int &x, int &y)
-    {
-        b0ard.alienland(x, y, 'A');
-        b0ard.display();
-        int Old_x = x + 1;
-        b0ard.alienland(Old_x, y, '.');
-        b0ard.display();
-        alienAttributes();
-        zombieAttributes(b0ard);
-    }
-
     void changeArrows(board &b0ard)
     {
         int x, y;
-        char arrow;
+        string arrow;
         char arr[] = {'v', '^', '>', '<'};
-        cout << "Enter column: ";
+        cout << "\nEnter column: ";
         cin >> x;
         cout << "Enter row: ";
         cin >> y;
@@ -291,127 +313,359 @@ public:
 
         if (initialdir == 'v' || initialdir == '^' || initialdir == '>' || initialdir == '<')
         {
-            if (arrow == arr[0])
+            if (arrow == "down")
             {
                 b0ard.alienland(x, y, 'v');
                 b0ard.display();
-                cout << "Arrow " << initialdir << " is switched to " << arr[0] << '.';
+                alienAttributes();
+                displayzombieAttributes(b0ard);
+                cout << "\nArrow " << initialdir << " is switched to " << arr[0] << ".";
             }
-            else if (arrow == arr[1])
+            else if (arrow == "up")
             {
                 b0ard.alienland(x, y, '^');
                 b0ard.display();
-                cout << "Arrow " << initialdir << " is switched to " << arr[1] << '.';
+                alienAttributes();
+                displayzombieAttributes(b0ard);
+                cout << "\nArrow " << initialdir << " is switched to " << arr[1] << ".";
             }
-            else if (arrow == arr[2])
+            else if (arrow == "right")
             {
                 b0ard.alienland(x, y, '>');
                 b0ard.display();
-                cout << "Arrow " << initialdir << " is switched to " << arr[2] << '.';
+                alienAttributes();
+                displayzombieAttributes(b0ard);
+                cout << "\nArrow " << initialdir << " is switched to " << arr[2] << ".";
             }
-            else if (arrow == arr[3])
+            else if (arrow == "left")
             {
                 b0ard.alienland(x, y, '<');
                 b0ard.display();
-                cout << "Arrow " << initialdir << " is switched to " << arr[3] << '.';
+                alienAttributes();
+                displayzombieAttributes(b0ard);
+                cout << "\nArrow " << initialdir << " is switched to " << arr[3] << ".";
             }
         }
         else
         {
             b0ard.display();
-            cout << "Selected object is not an arrow.\n";
+            alienAttributes();
+            displayzombieAttributes(b0ard);
+            cout << "\nSelected object is not an arrow.\n";
             cout << "Try again.\n";
         }
     }
 
-    void alienmovement(board &b0ard)
+    void alienUp(board &b0ard, int &x, int &y)
+    {
+        while (moves_)
+        {
+            y = y + 1;
+            objAlien(b0ard, x, y);
+            char getarrow = b0ard.getObjects(x, y);
+
+            if (moves_)
+            {
+                b0ard.alienland(x, y, 'A');
+                b0ard.display();
+                b0ard.alienland(x, y - 1, '.');
+                b0ard.display();
+                alienAttributes();
+                displayzombieAttributes(b0ard);
+
+                if (getarrow == '>' || getarrow == '<' || getarrow == '^' || getarrow == 'v')
+                {
+                    moveArrow(b0ard, getarrow, x, y);
+                }
+            }
+        }
+
+        // else
+        // {
+        //     y = y - 1;
+        // }
+    }
+
+    void alienDown(board &b0ard, int &x, int &y)
+    {
+        while (moves_)
+        {
+            y = y - 1;
+            objAlien(b0ard, x, y);
+            char getarrow = b0ard.getObjects(x, y);
+
+            if (moves_)
+            {
+                b0ard.alienland(x, y, 'A');
+                b0ard.display();
+                // int Old_y = y + 1;
+                b0ard.alienland(x, y + 1, '.');
+                b0ard.display();
+                alienAttributes();
+                displayzombieAttributes(b0ard);
+
+                if (getarrow == '>' || getarrow == '<' || getarrow == '^' || getarrow == 'v')
+                {
+                    moveArrow(b0ard, getarrow, x, y);
+                }
+            }
+        }
+
+        // else
+        // {
+        //     y = y + 1;
+        // }
+    }
+
+    void alienRight(board &b0ard, int &x, int &y)
+    {
+        while (moves_)
+        {
+            x = x + 1;
+            objAlien(b0ard, x, y);
+            char getarrow = b0ard.getObjects(x, y);
+
+            if (moves_)
+            {
+                b0ard.alienland(x, y, 'A');
+                b0ard.display();
+                // int Old_x = x - 1;
+                b0ard.alienland(x - 1, y, '.');
+                b0ard.display();
+                alienAttributes();
+                displayzombieAttributes(b0ard);
+
+                if (getarrow == '>' || getarrow == '<' || getarrow == '^' || getarrow == 'v')
+                {
+                    moveArrow(b0ard, getarrow, x, y);
+                }
+            }
+        }
+
+        // else
+        // {
+        //     x = x - 1;
+        // }
+    }
+
+    void alienLeft(board &b0ard, int &x, int &y)
+    {
+        while (moves_)
+        {
+            x = x - 1;
+            objAlien(b0ard, x, y);
+            char getarrow = b0ard.getObjects(x, y);
+
+            if (moves_)
+            {
+                b0ard.alienland(x, y, 'A');
+                b0ard.display();
+                // int Old_x = x + 1;
+                b0ard.alienland(x + 1, y, '.');
+                b0ard.display();
+                alienAttributes();
+                displayzombieAttributes(b0ard);
+
+                if (getarrow == '>' || getarrow == '<' || getarrow == '^' || getarrow == 'v')
+                {
+                    moveArrow(b0ard, getarrow, x, y);
+                }
+            }
+        }
+
+        // else
+        // {
+        //     x = x + 1;
+        // }
+    }
+
+    void alienmovement(board &b0ard, const string &command)
     {
         int x = b0ard.getcolumns() / 2 + 1;
         int y = b0ard.getrows() / 2 + 1; // old_y
 
-        do
+        // do
+        // {
+        if (command == "up") // up
         {
-            string command;
-            cout << endl;
-            cout << "Command: ";
-            cin >> command;
+            alienUp(b0ard, x, y);
+        }
+        else if (command == "down") // down
+        {
+            alienDown(b0ard, x, y);
+        }
+        else if (command == "right") // right
+        {
+            alienRight(b0ard, x, y);
+        }
+        else if (command == "left") // left
+        {
+            alienLeft(b0ard, x, y);
+        }
+        // else if (command == "arrow")
+        // {
+        //     changeArrows(b0ard);
+        // }
 
-            if (command == "up") // up
-            {
-                y = y + 1;
-                objAlien(b0ard, x, y);
-                cout << endl;
-                system("pause");
-                moveUp(b0ard, x, y);
-                //objAlien(b0ard, x, y);
-            }
-            else if (command == "down") // down
-            {
-                y = y - 1;
-                objAlien(b0ard, x, y);
-                cout << endl;
-                system("pause");
-                moveDown(b0ard, x, y);
-            }
-            else if (command == "right") // right
-            {
-                x = x + 1;
-                objAlien(b0ard, x, y);
-                cout << endl;
-                system("pause");
-                moveRight(b0ard, x, y);
-            }
-            else if (command == "left") // left
-            {
-                x = x - 1;
-                objAlien(b0ard, x, y);
-                system("pause");
-                moveLeft(b0ard, x, y);
-            }
-            else if (command == "arrow")
-            {
-                changeArrows(b0ard);
-            }
-        } while (x != b0ard.getcolumns() && x != 1 && y != b0ard.getrows() & y != 1);
-        cout << endl;
-        cout << "Alien hits a border.\n\n";
-        system("pause");
-        cout << "Alien's turn ends. The trail is reset.";
+        // } while (x != b0ard.getcolumns() && x != 1 && y != b0ard.getrows() & y != 1);
+        // cout << endl;
+        // cout << "Alien hits a border.\n\n";
+        // system("pause");
+        // b0ard.display();
+        // alienAttributes();
+        // zombieAttributes(b0ard);
+        // cout << "Alien's turn ends. The trail is reset.\n";
     }
 
     void alienAttributes()
     {
         cout << "Alien   : ";
         cout << "Life --> " << aLife_ << " ";
-        cout << "Attack --> " << setw(3) << aAttack << endl;
+        cout << "Attack --> " << setw(3) << aAttack_ << endl;
         cout << endl;
+    }
+
+    int getAlife()
+    {
+        return aLife_;
+    }
+
+    int getaAttack()
+    {
+        return aAttack_;
+    }
+
+    int getzlife()
+    {
+        return zLife_;
+    }
+
+    int getzattack()
+    {
+        return zAttack_;
+    }
+
+    int getzrange()
+    {
+        return zRange_;
     }
 
     void zombieAttributes(board &b0ard)
     {
-        for (int z = 1; z < b0ard.getzom() + 1; ++z)
+        int zombieLife[] = {100, 120, 150, 180, 200};
+        int noOfzLife = 5; // number of life in zombieLife array
+
+        int zombieAttack[] = {5, 10, 15, 20};
+        int noOfzAttack = 4; // number of attack in zombieAttack array
+
+        int zombieRange[] = {1, 2, 3, 4, 5};
+        int noOfzRange = 5; // number of range in zombieRange array
+
+        int zLife = rand() % noOfzLife;
+        int zAttack = rand() % noOfzAttack;
+        int zRange = rand() % noOfzRange;
+
+        zLife_ = zombieLife[zLife];
+        zAttack_ = zombieAttack[zAttack];
+        zRange_ = zombieRange[zRange];
+
+        ofstream in;
+        in.open("zombie_life.txt", ios::out);
+        in << zLife_ << endl;
+
+        if (!in.is_open())
         {
-            int zombieLife[] = {100, 120, 150, 180, 200};
-            int noOfzLife = 5; // number of life in zombieLife array
+            cout << "Error Opening File!" << endl;
+            // return 1;
+        }
+        in.close();
 
-            int zombieAttack[] = {5, 10, 15, 20};
-            int noOfzAttack = 4; // number of attack in zombieAttack array
+        ofstream in1;
+        in1.open("zombie_attack.txt", ios::out);
+        in1 << zAttack_ << endl;
 
-            int zombieRange[] = {1, 2, 3, 4, 5};
-            int noOfzRange = 5; // number of range in zombieRange array
+        if (!in1.is_open())
+        {
+            cout << "Error Opening File!" << endl;
+            // return 1;
+        }
+        in1.close();
 
-            zLife_ = rand() % noOfzLife;
-            zAttack_ = rand() % noOfzAttack;
-            zRange_ = rand() % noOfzRange;
+        ofstream in2;
+        in2.open("zombie_range.txt", ios::out);
+        in2 << zRange_ << endl;
 
-            int zLife = zombieLife[zLife_];
-            int zAttack = zombieAttack[zAttack_];
-            int zRange = zombieRange[zRange_];
+        if (!in2.is_open())
+        {
+            cout << "Error Opening File!" << endl;
+            // return 1;
+        }
+        in2.close();
+    }
 
-            cout << "Zombie " << z << ": "
-                 << "Life --> " << setw(3) << zLife << " "
-                 << "Attack --> " << setw(3) << zAttack << " "
-                 << "Range --> " << zRange << endl;
+    void displayzombieAttributes(board &b0ard)
+    {
+        for (int z = 1; z < b0ard.getzom() + 1; z++)
+        {
+            cout << "Zombie " << z << ": ";
+            string line;
+            ifstream file("zombie_life.txt");
+
+            while (getline(file, line))
+            {
+                string c = line;
+                cout << "Life --> " << setw(3) << c << " ";
+                break;
+            }
+
+            file.close();
+
+            string line1;
+            ifstream file1("zombie_attack.txt");
+
+            while (getline(file1, line1))
+            {
+                string a = line1;
+                cout << "Attack --> " << setw(3) << a << " ";
+                break;
+            }
+
+            file1.close();
+
+            string line2;
+            ifstream file2("zombie_range.txt");
+
+            while (getline(file2, line2))
+            {
+                string b = line2;
+                cout << "Range --> " << setw(3) << b << "\n";
+                break;
+            }
+
+            file2.close();
+
+        }
+    }
+
+    void moveArrow(board &b0ard, char &getarrow, int &x, int &y)
+    {
+        switch (getarrow)
+        {
+        case '^':
+            alienUp(b0ard, x, y);
+            break;
+
+        case 'V':
+            alienDown(b0ard, x, y);
+            break;
+
+        case '>':
+            alienRight(b0ard, x, y);
+            break;
+
+        case '<':
+            alienLeft(b0ard, x, y);
+            break;
         }
     }
 
@@ -427,83 +681,52 @@ public:
         {
             pod(b0ard);
         }
+        else if (b0ard.getObjects(x, y) == '^' || b0ard.getObjects(x, y) == 'v' || b0ard.getObjects(x, y) == '>' || b0ard.getObjects(x, y) == '<')
+        {
+            aAttack_ += 20;
+            b0ard.display();
+            alienAttributes();
+            displayzombieAttributes(b0ard);
+            cout << "\nAlien collects an arrow.\n";
+            cout << "Alien's attack is increased by 20.\n\n";
+            system("pause");
+        }
         else if (b0ard.getObjects(x, y) == 'r')
         {
             rock(b0ard, x, y);
         }
-        else if (b0ard.getObjects(x, y) == '^')
+        else if (b0ard.getObjects(x, y) == '1' || b0ard.getObjects(x, y) == '2' || b0ard.getObjects(x, y) == '3' ||
+                 b0ard.getObjects(x, y) == '4' || b0ard.getObjects(x, y) == '5' || b0ard.getObjects(x, y) == '6' ||
+                 b0ard.getObjects(x, y) == '7' || b0ard.getObjects(x, y) == '8' || b0ard.getObjects(x, y) == '9')
         {
-            cout << "Alien collects an arrow.\n";
-            cout << "Alien's attack is increased by 20.\n";
-            system("pause");
-            b0ard.alienland(x, y, '.');
-            y = y + 1;
-            //system("pause");
-            b0ard.alienland(x, y, 'A');
-            //b0ard.display();
-            //y = y -1;
-            //b0ard.alienland(x, y, '.');
-            alienAttributes();
-            zombieAttributes(b0ard);
-            //moveUp(b0ard, x, y);
-            //y = y - 1;
-            //b0ard.alienland(x, y, '.');
-            //moveUp(b0ard, x, y);
+            string line;
+            ifstream file("zombie_life.txt");
+            getline(file, line);
+            int zlife = stoi(line);
+
             b0ard.display();
             alienAttributes();
-            zombieAttributes(b0ard);
-        }
-
-        else if (b0ard.getObjects(x, y) == 'v')
-        {
-            
-            cout << "Alien collects an arrow.\n";
-            cout << "Alien's attack is increased by 20.\n";
+            zlife = zlife - aAttack_;
+            displayzombieAttributes(b0ard);
+            cout << "\nAlien hit Zombie " << b0ard.getObjects(x, y) << endl
+                 << endl;
             system("pause");
-            moveDown(b0ard, x, y);
-            y = y - 1;
-            b0ard.alienland(x, y, 'A');
-            b0ard.display();
-            y = y + 1;
-            b0ard.alienland(x, y, '.');
-            b0ard.display();
         }
-
-        else if (b0ard.getObjects(x, y) == '>')
+        else if (!b0ard.insideMap(x, y))
         {
-            // x = x - 1;
-            b0ard.display();
-            alienAttributes();
-            zombieAttributes(b0ard);
-            cout << "Alien collects an arrow.\n";
-            cout << "Alien's attack is increased by 20.\n";
-            system("pause");
-            x = x + 1;
-            b0ard.alienland(x, y, 'A');
-            b0ard.display();
-            x = x - 1;
-            b0ard.alienland(x, y, '.');
-            b0ard.display();
+            outsidemap(b0ard);
         }
+    }
 
-        else if (b0ard.getObjects(x, y) == '<')
-        {
-            // x = x + 1;
-            b0ard.display();
-            alienAttributes();
-            zombieAttributes(b0ard);
-            cout << "Alien collects an arrow.\n";
-            cout << "Alien's attack is increased by 20.\n";
-            system("pause");
-            x = x - 1;
-            b0ard.alienland(x, y, 'A');
-            //b0ard.display();
-            x = x + 1;
-            b0ard.alienland(x, y, '.');
-            b0ard.display();
-            
-
-        }
+    void outsidemap(board &b0ard)
+    {
+        cout << "\nAlien hits a border.\n\n";
+        system("pause");
+        b0ard.display();
+        alienAttributes();
+        displayzombieAttributes(b0ard);
+        cout << "\nAlien's turns end. Trail is reset.\n";
+        moves_ = 0;
     }
 
     void health(board &b0ard)
@@ -515,135 +738,332 @@ public:
 
         b0ard.display();
         alienAttributes();
-        zombieAttributes(b0ard);
-        cout << "Alien found a health pack." << endl;
-        cout << "Alien's life increase by 20.";
+        displayzombieAttributes(b0ard);
+        cout << "\nAlien found a health pack." << endl;
+        cout << "Alien's life increase by 20.\n";
         cout << endl;
+        system("pause");
     }
 
     void pod(board &b0ard)
     {
         b0ard.display();
         alienAttributes();
-        zombieAttributes(b0ard);
-        cout << "Alien found a pod." << endl;
-        cout << "Nearest zombie's life is decreased by 10.";
+        displayzombieAttributes(b0ard);
+        cout << "\nAlien found a pod." << endl;
+        cout << "Nearest zombie's life is decreased by 10.\n";
         cout << endl;
+        system("pause");
     }
 
     void rock(board &b0ard, int &x, int &y)
     {
-        int objUnderRock[] = {'h', 'p', ' '};
-        int numOfOURock = 3; // number of objects under rock
+        int objUnderRock[] = {'h', 'p', ' ', '>', '<', '^', 'v'};
+        int numOfOURock = 7; // number of objects under rock
 
         int randRock = rand() % numOfOURock;
         int Rock = objUnderRock[randRock];
 
         if (Rock == 'h')
         {
-            cout << "Alien hits a rock." << endl;
-            cout << "Alien discover a health pack." << endl;
+            cout << "\nAlien hits a rock." << endl;
+            cout << "Alien discover a health pack.\n"
+                 << endl;
             system("pause");
             b0ard.alienland(x, y, 'h');
             b0ard.display();
             alienAttributes();
-            zombieAttributes(b0ard);
+            displayzombieAttributes(b0ard);
+            // moves_ = 0;
         }
         else if (Rock == 'p')
         {
-            cout << "Alien hits a rock." << endl;
-            cout << "Alien discover a pod." << endl;
+            cout << "\nAlien hits a rock." << endl;
+            cout << "Alien discover a pod.\n"
+                 << endl;
             system("pause");
             b0ard.alienland(x, y, 'p');
             b0ard.display();
             alienAttributes();
-            zombieAttributes(b0ard);
+            displayzombieAttributes(b0ard);
+            // moves_ = 0;
         }
         else if (Rock == ' ')
         {
-            cout << "Alien hits a rock." << endl;
-            cout << "Alien found a white space.";
+            cout << "\nAlien hits a rock." << endl;
+            cout << "Alien found a white space.\n\n";
             system("pause");
             b0ard.alienland(x, y, ' ');
             b0ard.display();
             alienAttributes();
-            zombieAttributes(b0ard);
+            displayzombieAttributes(b0ard);
+            // moves_ = 0;
         }
+        else if (Rock == '>' || '<' || '^' || 'v')
+        {
+            cout << "\nAlien hits a rock.\n";
+            cout << "Alien found an arrow.\n\n";
+            system("pause");
+            b0ard.alienland(x, y, Rock);
+            b0ard.display();
+            alienAttributes();
+            displayzombieAttributes(b0ard);
+        }
+
+        moves_ = 0;
     }
 };
 
 class zombieturn
 {
+private:
+    bool moves_{0};
+    int zomPosX_, zomPosY_;
 
 public:
     zombieturn(){};
 
+    int zombiePosX() const
+    {
+        return zomPosX_;
+    }
+
+    int zombiePosY() const
+    {
+        return zomPosY_;
+    }
+
+    void zombieAttack(board &b0ard)
+    {
+        int aLife_{100};
+        int z_x = zomPosX_;
+        int z_y = zomPosY_;
+
+        string line2;
+        ifstream file2("zombie_range.txt");
+        string line1;
+        ifstream file1("zombie_attack.txt");
+
+        getline(file2, line2);
+        int zrange = stoi(line2);
+        int attack = stoi(line1);
+
+        if (b0ard.getObjects(z_x + zrange, z_y) == 'A' || b0ard.getObjects(z_x - zrange, z_y) == 'A' || b0ard.getObjects(z_x, z_y + zrange) == 'A' || b0ard.getObjects(z_x, z_y - zrange) == 'A')
+        {
+            aLife_ = aLife_ - attack;
+        }
+
+        moves_ = 1;
+    }
+
+    void zombieUp(board &b0ard, alienturn &alien, int &zombieNum)
+    {
+        int zomPosX_ = b0ard.getzom_x();
+        int zomPosY_ = b0ard.getzom_y() + 1;
+
+        if (b0ard.getObjects(zomPosX_, zomPosY_) != 'A' || b0ard.getObjects(zomPosX_, zomPosY_) != zombieNum)
+        {
+            b0ard.alienland(zomPosX_, zomPosY_, zombieNum);
+            b0ard.display();
+            alien.alienAttributes();
+            alien.zombieAttributes(b0ard);
+            cout << "\n Zombie " << zombieNum << " moves up.\n\n";
+            system("pause");
+        }
+        else
+        {
+            randMove(b0ard, alien, zombieNum);
+        }
+    }
+
+    void zombieDown(board &b0ard, alienturn &alien, int &zombieNum)
+    {
+        int zomPosX = b0ard.getzom_x();
+        int zomPosY = b0ard.getzom_y() - 1;
+
+        if (b0ard.getObjects(zomPosX, zomPosY) != 'A' || b0ard.getObjects(zomPosX_, zomPosY_) != zombieNum)
+        {
+            b0ard.alienland(zomPosX, zomPosY, zombieNum);
+            b0ard.display();
+            alien.alienAttributes();
+            alien.zombieAttributes(b0ard);
+            cout << "\n Zombie " << zombieNum << " moves down.\n\n";
+            system("pause");
+        }
+        else
+        {
+            randMove(b0ard, alien, zombieNum);
+        }
+    }
+
+    void zombieRight(board &b0ard, alienturn &alien, int &zombieNum)
+    {
+        int zomPosX = b0ard.getzom_x() + 1;
+        int zomPosY = b0ard.getzom_y();
+
+        if (b0ard.getObjects(zomPosX, zomPosY) != 'A' || b0ard.getObjects(zomPosX_, zomPosY_) != zombieNum)
+        {
+            b0ard.alienland(zomPosX, zomPosY, zombieNum);
+            b0ard.display();
+            alien.alienAttributes();
+            alien.zombieAttributes(b0ard);
+            cout << "\n Zombie " << zombieNum << " moves right.\n\n";
+            system("pause");
+        }
+        else
+        {
+            randMove(b0ard, alien, zombieNum);
+        }
+    }
+
+    void zombieLeft(board &b0ard, alienturn &alien, int &zombieNum)
+    {
+        int zomPosX = b0ard.getzom_x() - 1;
+        int zomPosY = b0ard.getzom_y();
+
+        if (b0ard.getObjects(zomPosX, zomPosY) != 'A' || b0ard.getObjects(zomPosX_, zomPosY_) != zombieNum)
+        {
+            b0ard.alienland(zomPosX, zomPosY, zombieNum);
+            b0ard.display();
+            alien.alienAttributes();
+            alien.zombieAttributes(b0ard);
+            cout << "\n Zombie " << zombieNum << " moves left.\n\n";
+            system("pause");
+        }
+        else
+        {
+            randMove(b0ard, alien, zombieNum);
+        }
+    }
+
+    void randMove(board &b0ard, alienturn &alien, int &zombieNum)
+    {
+        int NumofMove = 4;
+        int randMove = rand() % 4 + 1;
+
+        switch (randMove)
+        {
+        case '1':
+            zombieUp(b0ard, alien, zombieNum);
+            break;
+        case '2':
+            zombieDown(b0ard, alien, zombieNum);
+            break;
+        case '3':
+            zombieRight(b0ard, alien, zombieNum);
+            break;
+        case '4':
+            zombieLeft(b0ard, alien, zombieNum);
+            break;
+        }
+    }
+
     void zombiesmovement(board &b0ard, alienturn &alien)
     {
-        int x, y;
-        char obj;
+        char objZombie[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
-        for (int n = 49; n < b0ard.getzom() + 49; ++n)
+        while (moves_)
         {
-            char z = char(n);
-            for (y = 1; y < b0ard.getrows() + 1; ++y)
+            for (int i = 0; i < b0ard.getzom(); ++i)
             {
-                for (x = 1; x < b0ard.getcolumns() + 1; ++x)
-                {
-                    obj = b0ard.getObjects(x, y);
-                    if (obj == z)
-                    {
-                        int move[] = {x - 1, x + 1, y - 1, y + 1};
-                        int numofmove = 4;
-                        int randmove = rand() & 4;
-                        int dir = move[randmove]; // direction
+                int zombieNum = objZombie[i];
 
-                        if (dir == move[0])
-                        {
-                            b0ard.alienland(move[0], y, z);
-                            b0ard.display();
-                            b0ard.alienland(x, y, ' ');
-                            b0ard.display();
-                            alien.alienAttributes();
-                            alien.zombieAttributes(b0ard);
-                            cout << "Zombie " << z << " moves left.";
-                        }
-                        else if (dir == move[1])
-                        {
-                            b0ard.alienland(move[1], y, z);
-                            b0ard.display();
-                            b0ard.alienland(x, y, ' ');
-                            b0ard.display();
-                            alien.alienAttributes();
-                            alien.zombieAttributes(b0ard);
-                            cout << "Zombie " << z << " moves right.";
-                        }
-                        else if (dir == move[2])
-                        {
-                            b0ard.alienland(move[2], y, z);
-                            b0ard.display();
-                            b0ard.alienland(x, y, ' ');
-                            b0ard.display();
-                            alien.alienAttributes();
-                            alien.zombieAttributes(b0ard);
-                            cout << "Zombie " << z << " moves down.";
-                        }
-                        else if (dir == move[3])
-                        {
-                            b0ard.alienland(move[3], y, z);
-                            b0ard.display();
-                            b0ard.alienland(x, y, ' ');
-                            b0ard.display();
-                            alien.alienAttributes();
-                            alien.zombieAttributes(b0ard);
-                            cout << "Zombie " << z << " moves up.";
-                        }
-                    }
-                }
+                randMove(b0ard, alien, zombieNum);
+                zombieAttack(b0ard);
             }
         }
     }
 };
+
+string getfillename()
+{
+    string newfile;
+
+    cout << "Name your file -> ";
+    cin >> newfile;
+    cout << endl;
+    return newfile;
+}
+
+void savefile(string file)
+{
+
+    int rows, colums;
+    board b0ard = board(rows, colums);
+    alienturn alien;
+    zombieturn zombie;
+    fstream gamefile;
+    string file1;
+
+    int srows = b0ard.getrows();
+    int scols = b0ard.getcolumns();
+    int szoms = b0ard.getzom();
+
+    file1 = ".\\alienzombiefiles" + getfillename();
+    gamefile.open(file1, ios::out);
+
+    if (gamefile.is_open())
+    {
+        gamefile << "\nEH" << srows << "\nEA" << scols << "\nEB" << szoms;
+
+        int currentaLife = alien.getAlife();
+        int currentaAttack = alien.getaAttack();
+        gamefile << "\nEH" << currentaLife << "\nEA" << currentaAttack;
+
+        gamefile.close();
+        cout << "Game saved successfully." << endl;
+    }
+}
+
+void start();
+
+void gameCommand(board &b0ard, alienturn &alien, zombieturn &zombie)
+{
+    // do
+    // {
+    string command;
+    cout << "\nCommand> ";
+    cin >> command;
+
+    if (command == "up" || "down" || "right" || "left")
+    {
+        alien.alienmovement(b0ard, command);
+        zombie.zombiesmovement(b0ard, alien);
+    }
+    else if (command == "arrow")
+    {
+        alien.changeArrows(b0ard);
+    }
+    else if (command == "help")
+    {
+        help();
+    }
+    else if (command == "load")
+    {
+        /* code */
+    }
+    else if (command == "save")
+    {
+        getfillename();
+        string newfile;
+        savefile(newfile);
+    }
+    else if (command == "quit")
+    {
+        char yesno;
+        cout << "Exit the game? (y/n) --> ";
+        cin >> yesno;
+
+        if (yesno == 'y')
+        {
+            exit(0);
+        }
+        else if (yesno == 'n')
+        {
+            start();
+        }
+    }
+}
 
 void start()
 {
@@ -654,29 +1074,27 @@ void start()
     cout << "columns = " << b0ard.getcolumns() << endl;
 
     b0ard.alienland(b0ard.getcolumns() / 2 + 1, b0ard.getrows() / 2 + 1, 'A');
+    b0ard.zombieland();
     b0ard.display();
 
     alienturn alien;
     zombieturn zombie;
 
     alien.alienAttributes();
-    alien.zombieAttributes(b0ard);
+    alien.displayzombieAttributes(b0ard);
 
-    alien.alienmovement(b0ard);
-    zombie.zombiesmovement(b0ard, alien);
+    // alien.alienmovement(b0ard, command);
+    // zombie.zombiesmovement(b0ard, alien);
+
+    while (true)
+    {
+        gameCommand(b0ard, alien, zombie);
+    }
 }
-
-// void load()
-// {
-//     std::ofstream outfile;
-//     outfile.open("example.txt");
-//     outfile << "Hello, World!" << std::endl;
-//     outfile.close();
-
-// }
 
 int main()
 {
+    bool done = false;
     srand(time(NULL));
     cout << "                   Assignment Part 1" << endl;
     cout << "                   Let's Get Started!" << endl;
@@ -688,14 +1106,14 @@ int main()
 
     switch (playerscommand)
     {
-    case '1': //help menu
+    case '1': // help menu
         cout << endl;
         help();
 
-    case '2': //start game
+    case '2': // start game
         start();
         cout << endl;
-        Introduction();
+        // Introduction();
         break;
 
     case '3': // load existing game
