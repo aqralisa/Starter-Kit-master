@@ -1058,43 +1058,29 @@ public:
     }
 };
 
-string getfilename()
+void save()
 {
-    string newfile;
-
-    cout << "Name your file -> ";
-    cin >> newfile;
-    cout << endl;
-    return newfile;
+    int rows, columns;
+    board b0ard = board(rows, columns);
+    ofstream nfile("savegame.txt");
+    nfile <<  " Rows = " << b0ard.getrows() << endl;
+    nfile << " Columns = " << b0ard.getcolumns() << endl;
+    nfile << " Number of Zombies = " << b0ard.getzom() << endl << endl;
+    nfile.close();
+    
 }
 
-void savefile(string file)
+void load()
 {
-    int rows, colums;
-    board b0ard = board(rows, colums);
-    alienturn alien;
-    zombieturn zombie;
-    fstream gamefile;
-    string file1;
-
-    int srows = b0ard.getrows();
-    int scols = b0ard.getcolumns();
-    int szoms = b0ard.getzom();
-
-    file1 = ".\\alienzombiefiles" + getfilename();
-    gamefile.open(file1, ios::out);
-
-    if (gamefile.is_open())
+    ifstream files("savegame.txt");
+    string line;
+    while (getline(files, line))
     {
-        gamefile << "\nEH" << srows << "\nEA" << scols << "\nEB" << szoms;
-
-        int currentaLife = alien.getAlife();
-        int currentaAttack = alien.getaAttack();
-        gamefile << "\nEH" << currentaLife << "\nEA" << currentaAttack;
-
-        gamefile.close();
-        cout << "Game saved successfully." << endl;
+        cout << line << endl;
     }
+
+    cout << "You can key above number of rows, colums and zombies " << endl;
+    cout << "to continue playing with the same game settings as the previous game." << endl;
 }
 
 void start();
@@ -1122,13 +1108,11 @@ void gameCommand(board &b0ard, alienturn &alien, zombieturn &zombie)
         }
         else if (command == "load")
         {
-            /* code */
+            load();
         }
         else if (command == "save")
         {
-            getfilename();
-            string newfile;
-            savefile(newfile);
+            save();
         }
         else if (command == "quit")
         {
@@ -1185,7 +1169,7 @@ int main()
         break;
 
     case '3': // load existing game
-        cout << "Not Finished yet." << endl;
+        load();
         break;
 
     case '4':
